@@ -996,7 +996,7 @@
             
             <div class="contact-container">
                 <div class="contact-form">
-                    <form id="contactForm" action="send_email.php" method="POST" enctype="multipart/form-data">
+                    <form id="contactForm" method="POST">
                         <div class="form-group">
                             <label for="name">الاسم الكامل</label>
                             <input type="text" id="name" name="name" required>
@@ -1014,7 +1014,7 @@
                         
                         <div class="form-group">
                             <label for="service">الخدمة المطلوبة</label>
-                            <select id="service" name="service" required>
+                            <select id="service" name="service">
                                 <option value="hajj">برامج الحج</option>
                                 <option value="umrah">برامج العمرة</option>
                                 <option value="saudi-visa">تأشيرات السعودية</option>
@@ -1193,7 +1193,6 @@
             e.preventDefault();
             
             const form = this;
-            const formData = new FormData(form);
             const submitBtn = form.querySelector('button[type="submit"]');
             const errorDiv = document.getElementById('formError');
             const successDiv = document.getElementById('formSuccess');
@@ -1230,48 +1229,25 @@
                     throw new Error('الرجاء إدخال بريد إلكتروني صحيح');
                 }
                 
-                // Send data using fetch
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(text) });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        // Show success message
-                        successDiv.textContent = data.message;
-                        successDiv.style.display = 'block';
-                        
-                        // Show thank you modal
-                        document.getElementById('thankYouModal').classList.add('active');
-                        
-                        // Reset form
-                        form.reset();
-                    } else {
-                        throw new Error(data.message || 'حدث خطأ أثناء إرسال الرسالة');
-                    }
-                })
-                .catch(error => {
-                    // Show error message
-                    errorDiv.textContent = error.message || 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
-                    errorDiv.style.display = 'block';
+                // Simulate form submission (in a real scenario, you would use AJAX)
+                setTimeout(() => {
+                    // Show success message
+                    successDiv.textContent = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
+                    successDiv.style.display = 'block';
                     
-                    // Scroll to error message
-                    errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                })
-                .finally(() => {
+                    // Show thank you modal
+                    document.getElementById('thankYouModal').classList.add('active');
+                    
+                    // Reset form
+                    form.reset();
+                    
                     // Reset button state
                     submitBtn.textContent = originalBtnText;
                     submitBtn.disabled = false;
-                });
+                    
+                    // Scroll to success message
+                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 1500);
                 
             } catch (error) {
                 // Show error message
@@ -1280,6 +1256,8 @@
                 
                 // Scroll to error message
                 errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                console.error('Error:', error);
                 
                 // Reset button state
                 submitBtn.textContent = originalBtnText;
