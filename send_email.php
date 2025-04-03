@@ -1,125 +1,122 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
+// تمكين عرض الأخطاء للتطوير
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// السماح بطلبات CORS (لأغراض التطوير)
+// تمكين CORS للطلبات من أي مصدر (للتطوير المحلي)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
+header('Content-Type: application/json; charset=utf-8');
 
-// معالجة طلبات OPTIONS لـ CORS
+// معالجة طلب OPTIONS لـ CORS Preflight
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // جلب البيانات من النموذج
-    $name = isset($_POST['name']) ? strip_tags(trim($_POST['name'])) : '';
-    $email = isset($_POST['email']) ? filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL) : '';
-    $phone = isset($_POST['phone']) ? strip_tags(trim($_POST['phone'])) : '';
-    $service = isset($_POST['service']) ? strip_tags(trim($_POST['service'])) : '';
-    $message = isset($_POST['message']) ? strip_tags(trim($_POST['message'])) : '';
-    
-    // مصفوفة للرد
-    $response = [
-        'success' => false,
-        'message' => '',
-        'errors' => []
-    ];
-    
-    // التحقق من صحة البيانات
-    if (empty($name)) {
-        $response['errors']['name'] = 'حقل الاسم مطلوب';
-    }
-    
-    if (empty($email)) {
-        $response['errors']['email'] = 'حقل البريد الإلكتروني مطلوب';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $response['errors']['email'] = 'الرجاء إدخال بريد إلكتروني صحيح';
-    }
-    
-    if (empty($phone)) {
-        $response['errors']['phone'] = 'حقل الهاتف مطلوب';
-    }
-    
-    if (empty($service)) {
-        $response['errors']['service'] = 'حقل الخدمة مطلوب';
-    }
-    
-    if (empty($message)) {
-        $response['errors']['message'] = 'حقل الرسالة مطلوب';
-    }
-    
-    // إذا كان هناك أخطاء
-    if (!empty($response['errors'])) {
-        http_response_code(400);
-        $response['message'] = 'الرجاء تصحيح الأخطاء في النموذج';
-        echo json_encode($response);
-        exit;
-    }
-    
-    // إعداد محتوى البريد الإلكتروني
-    $to = "sabeeluk.lilssafar@gmail.com";
-    $subject = "طلب جديد: $service - من $name";
-    
-    $email_content = "
-    <html dir='rtl'>
-    <head>
-        <meta charset='UTF-8'>
-        <title>$subject</title>
-        <style>
-            body { font-family: 'Tajawal', sans-serif; line-height: 1.6; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #006494; color: white; padding: 10px; text-align: center; }
-            .content { padding: 20px; background-color: #f9f9f9; }
-            .footer { text-align: center; padding: 10px; font-size: 12px; color: #777; }
-        </style>
-    </head>
-    <body>
-        <div class='container'>
-            <div class='header'>
-                <h2>طلب جديد من موقع سَبِيلُكَ لِلسَّفَر</h2>
-            </div>
-            <div class='content'>
-                <p><strong>الاسم:</strong> $name</p>
-                <p><strong>البريد الإلكتروني:</strong> $email</p>
-                <p><strong>رقم الهاتف:</strong> $phone</p>
-                <p><strong>الخدمة المطلوبة:</strong> $service</p>
-                <p><strong>الرسالة:</strong></p>
-                <p>$message</p>
-            </div>
-            <div class='footer'>
-                <p>هذه الرسالة تم إرسالها تلقائيًا من موقع سَبِيلُكَ لِلسَّفَر</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    ";
-    
-    // إعداد رأس البريد
-    $headers = "From: $name <$email>\r\n";
-    $headers .= "Reply-To: $email\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-    
-    // إرسال البريد الإلكتروني
-    if (mail($to, $subject, $email_content, $headers)) {
-        http_response_code(200);
-        $response['success'] = true;
-        $response['message'] = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
-    } else {
-        http_response_code(500);
-        $response['message'] = 'عذرًا، حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى لاحقًا أو التواصل عبر واتساب.';
-    }
-    
-    echo json_encode($response);
-    exit;
-} else {
+// السماح فقط بطلبات POST
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
     http_response_code(405);
     echo json_encode([
         'success' => false,
-        'message' => 'طريقة الإرسال غير مسموح بها. يرجى استخدام طريقة POST.'
+        'message' => 'Method Not Allowed: يسمح فقط بطريقة POST'
     ]);
     exit;
+}
+
+// استقبال البيانات سواء كـ POST عادي أو JSON
+$data = $_POST;
+if (empty($data)) {
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+    
+    // تحقق إضافي من البيانات
+    if (empty($data)) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => 'لا توجد بيانات مرسلة'
+        ]);
+        exit;
+    }
+}
+
+// التحقق من البيانات المطلوبة
+$required_fields = ['name', 'email', 'phone', 'service', 'message'];
+$missing_fields = [];
+foreach ($required_fields as $field) {
+    if (empty($data[$field])) {
+        $missing_fields[] = $field;
+    }
+}
+
+if (!empty($missing_fields)) {
+    http_response_code(400);
+    echo json_encode([
+        'success' => false,
+        'message' => 'الحقول المطلوبة ناقصة: ' . implode(', ', $missing_fields)
+    ]);
+    exit;
+}
+
+// تنظيف البيانات
+$name = htmlspecialchars(strip_tags($data['name']));
+$email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+$phone = htmlspecialchars(strip_tags($data['phone']));
+$service = htmlspecialchars(strip_tags($data['service']));
+$message = htmlspecialchars(strip_tags($data['message']));
+
+// إنشاء محتوى البريد
+$to = "sabeeluk.lilssafar@gmail.com";
+$subject = "طلب جديد: $service - من $name";
+$headers = "From: $name <$email>\r\n";
+$headers .= "Reply-To: $email\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
+$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+$email_content = "
+<!DOCTYPE html>
+<html dir='rtl'>
+<head>
+    <meta charset='UTF-8'>
+    <title>$subject</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        h2 { color: #006494; }
+        p { margin: 10px 0; }
+        .footer { margin-top: 20px; font-size: 12px; color: #777; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h2>طلب جديد من موقع سَبِيلُكَ لِلسَّفَر</h2>
+        <p><strong>الاسم:</strong> $name</p>
+        <p><strong>البريد الإلكتروني:</strong> $email</p>
+        <p><strong>رقم الهاتف:</strong> $phone</p>
+        <p><strong>الخدمة المطلوبة:</strong> $service</p>
+        <p><strong>الرسالة:</strong></p>
+        <p>$message</p>
+        <div class='footer'>
+            <p>هذه الرسالة تم إرسالها تلقائيًا من النموذج الخاص بالموقع</p>
+        </div>
+    </div>
+</body>
+</html>
+";
+
+// محاولة إرسال البريد
+if (mail($to, $subject, $email_content, $headers)) {
+    echo json_encode([
+        'success' => true,
+        'message' => 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.'
+    ]);
+} else {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'حدث خطأ أثناء محاولة إرسال الرسالة. يرجى المحاولة لاحقاً.'
+    ]);
 }
 ?>
