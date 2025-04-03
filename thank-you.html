@@ -3,93 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شكرًا لتواصلكم - سَبِيلُكَ لِلسَّفَر</title>
+    <title>شكراً لك - سَبِيلُكَ لِلسَّفَر</title>
+    <meta name="description" content="شكراً لتواصلكم مع سَبِيلُكَ لِلسَّفَر - وكالة سفر معتمدة لتنظيم رحلات الحج والعمرة، استخراج تأشيرات السعودية، وحجز الطيران والفنادق بأسعار تنافسية.">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="شكراً لك - سَبِيلُكَ لِلسَّفَر">
+    <meta property="og:description" content="شكراً لتواصلكم مع سَبِيلُكَ لِلسَّفَر - وكالة سفر معتمدة لتنظيم رحلات الحج والعمرة، استخراج تأشيرات السعودية، وحجز الطيران والفنادق بأسعار تنافسية.">
+    <meta property="og:url" content="https://elmohaseb-lsiyaha.netlify.app/thank-you.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://elmohaseb-lsiyaha.netlify.app/images/logo.gif">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://elmohaseb-lsiyaha.netlify.app/thank-you.html" />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/gif" href="images/logo.gif">
+    
+    <!-- Load non-critical CSS asynchronously -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800;900&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800;900&display=swap"></noscript>
+    
     <style>
         :root {
             --primary-color: #006494;
+            --primary-light: #0582CA;
+            --secondary-color: #FFFFFF;
             --accent-color: #FF9100;
+            --text-dark: #121212;
+            --text-medium: #333333;
+            --text-light: #FFFFFF;
+            --whatsapp-color: #128C7E;
+            --whatsapp-dark: #075E54;
             --white: #FFFFFF;
+            --black: #000000;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+            --error-color: #d32f2f;
         }
-        body {
-            font-family: 'Tajawal', sans-serif;
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .success-container {
-            background: var(--white);
+        
+        body {
+            font-family: 'Tajawal', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.8;
+            background-color: #f5f5f5;
+            font-weight: 700;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 900;
+            line-height: 1.3;
+            color: var(--text-dark);
+        }
+        
+        p, li, a, span {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        a {
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Thank You Page Styles */
+        .thank-you-container {
+            max-width: 800px;
+            margin: 5rem auto;
             padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-            border-top: 5px solid var(--accent-color);
+            text-align: center;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 3px solid var(--primary-color);
         }
-        h1 {
+        
+        .thank-you-icon {
+            font-size: 5rem;
             color: var(--primary-color);
             margin-bottom: 1.5rem;
         }
-        p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            color: #333;
+        
+        .thank-you-title {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
         }
+        
+        .thank-you-message {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
         .whatsapp-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(to bottom, #25D366, #128C7E);
+            background: linear-gradient(to bottom, var(--whatsapp-color), var(--whatsapp-dark));
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            text-decoration: none;
+            margin: 1.5rem auto 0;
+            box-shadow: 0 4px 15px rgba(18, 140, 126, 0.4);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            min-width: 200px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            letter-spacing: 0.5px;
+        }
+        
+        .whatsapp-btn:hover, .whatsapp-btn:focus {
+            background: var(--whatsapp-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(7, 94, 84, 0.5);
+            border-color: var(--white);
+        }
+        
+        .whatsapp-btn i {
+            margin-left: 0.8rem;
+            color: var(--white);
+            font-size: 1.6rem;
+            font-weight: 900;
+        }
+        
+        .home-btn {
+            display: inline-block;
+            background: linear-gradient(to bottom, var(--primary-color), var(--primary-light));
             color: white;
             padding: 1rem 2rem;
             border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
+            font-size: 1.1rem;
+            font-weight: 800;
             margin-top: 1rem;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            box-shadow: 0 4px 15px rgba(18, 140, 126, 0.4);
+            transition: var(--transition);
         }
-        .whatsapp-btn:hover {
-            background: white;
-            color: #25D366;
-            border-color: #25D366;
+        
+        .home-btn:hover, .home-btn:focus {
+            background: var(--primary-light);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(7, 94, 84, 0.5);
+            box-shadow: 0 4px 10px rgba(0, 100, 148, 0.3);
         }
-        .fa-whatsapp {
-            margin-left: 0.8rem;
-            font-size: 1.4rem;
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: var(--text-light);
+            text-align: center;
+            padding: 2.5rem;
+            margin-top: 3rem;
+            border-top: 4px solid var(--accent-color);
         }
-        .logo-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid var(--accent-color);
-            object-fit: contain;
-            background-color: white;
-            padding: 5px;
-            margin-bottom: 1.5rem;
+        
+        .copyright {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 700;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .thank-you-container {
+                margin: 2rem auto;
+                padding: 1.5rem;
+            }
+            
+            .thank-you-title {
+                font-size: 2rem;
+            }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="success-container">
-        <img src="images/logo.gif" alt="شعار سَبِيلُكَ لِلسَّفَر" class="logo-img" onerror="this.src='https://via.placeholder.com/100x100?text=شعار+الشركة';this.onerror=null;">
-        <h1>تم استلام رسالتك بنجاح!</h1>
-        <p>سنقوم بالرد عليك خلال 24 ساعة. للاستفسارات العاجلة، يرجى التواصل عبر واتساب.</p>
-        <a href="https://wa.me/message/FIW5CFX2HH2HF1" class="whatsapp-btn" target="_blank">
-            التواصل عبر واتساب <i class="fab fa-whatsapp"></i>
-        </a>
-        <p style="margin-top: 2rem;">
-            <a href="index.html" style="color: var(--primary-color); text-decoration: underline; font-weight: bold;">العودة إلى الصفحة الرئيسية</a>
+    <div class="thank-you-container">
+        <div class="thank-you-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1 class="thank-you-title">شكراً لتواصلكم معنا</h1>
+        <p class="thank-you-message">
+            تم استلام رسالتك بنجاح وسيقوم فريقنا بالرد عليك خلال 24 ساعة.<br>
+            للاستفسارات العاجلة، يمكنك التواصل معنا مباشرة عبر واتساب.
         </p>
+        <a href="https://wa.me/message/FIW5CFX2HH2HF1" class="whatsapp-btn" target="_blank" aria-label="تواصل معنا عبر واتساب">
+            <i class="fab fa-whatsapp"></i> تواصل عبر واتساب
+        </a>
+        <br>
+        <a href="index.html" class="home-btn" aria-label="العودة إلى الصفحة الرئيسية">
+            <i class="fas fa-home"></i> العودة إلى الصفحة الرئيسية
+        </a>
     </div>
+    
+    <footer aria-label="تذييل الصفحة">
+        <div class="copyright">
+            <p>جميع الحقوق محفوظة &copy; <span id="year"></span> سَبِيلُكَ لِلسَّفَر - SABEELUK LILSSAFAR</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // Update copyright year automatically
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Load non-critical resources
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadFontAwesome = document.createElement('link');
+            loadFontAwesome.rel = 'stylesheet';
+            loadFontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css';
+            document.head.appendChild(loadFontAwesome);
+        });
+    </script>
 </body>
 </html>
