@@ -902,8 +902,8 @@
             
             <div class="contact-container">
                 <div class="contact-form">
-                    <form id="contactForm" action="https://formsubmit.co/kuduwi" method="POST">
-                        <!-- حقل مخفي لتحديد عنوان الرد -->
+                    <form id="contactForm" action="https://formsubmit.co/sabeeluk.lilssafar@gmail.com" method="POST">
+                        <!-- حقول مخفية ل FormSubmit -->
                         <input type="hidden" name="_next" value="https://elmohaseb-lsiyaha.netlify.app/thank-you.html">
                         <input type="hidden" name="_subject" value="رسالة جديدة من موقع سَبِيلُكَ لِلسَّفَر">
                         <input type="hidden" name="_template" value="table">
@@ -1080,23 +1080,22 @@
             document.getElementById('main-content').focus();
         });
         
-        // Form submission - الكود المعدل
+        // Form submission
         document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const form = this;
-            const formData = new FormData(form);
             const submitBtn = form.querySelector('button[type="submit"]');
             const errorDiv = document.getElementById('formError');
             const originalBtnText = submitBtn.textContent;
             
             try {
-                // إظهار حالة التحميل
+                // Show loading state
                 submitBtn.textContent = 'جاري الإرسال...';
                 submitBtn.disabled = true;
                 errorDiv.style.display = 'none';
                 
-                // التحقق من الحقول المطلوبة
+                // Validate required fields
                 const requiredFields = form.querySelectorAll('[required]');
                 let isValid = true;
                 
@@ -1113,9 +1112,10 @@
                     throw new Error('الرجاء ملء جميع الحقول المطلوبة');
                 }
                 
-                // إرسال البيانات
+                // Submit form data
+                const formData = new FormData(form);
                 const response = await fetch(form.action, {
-                    method: form.method,
+                    method: 'POST',
                     body: formData,
                     headers: {
                         'Accept': 'application/json'
@@ -1123,23 +1123,22 @@
                 });
                 
                 if (response.ok) {
-                    // إذا كان الإرسال ناجحاً، يتم التوجيه إلى صفحة الشكر
-                    window.location.href = 'thank-you.html';
+                    // Redirect to thank you page
+                    window.location.href = form.querySelector('[name="_next"]').value;
                 } else {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'حدث خطأ أثناء إرسال الرسالة');
+                    throw new Error('حدث خطأ أثناء إرسال الرسالة');
                 }
             } catch (error) {
-                // عرض رسالة الخطأ
+                // Show error message
                 errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
                 
-                // التمرير إلى رسالة الخطأ
+                // Scroll to error message
                 errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 
                 console.error('Error:', error);
             } finally {
-                // إعادة تعيين حالة الزر
+                // Reset button state
                 submitBtn.textContent = originalBtnText;
                 submitBtn.disabled = false;
             }
