@@ -996,7 +996,13 @@
             
             <div class="contact-container">
                 <div class="contact-form">
-                    <form id="contactForm" method="POST">
+                    <form id="contactForm" action="https://formsubmit.co/sabeeluk.lilssafar@gmail.com" method="POST">
+                        <!-- إعدادات FormSubmit -->
+                        <input type="hidden" name="_next" value="https://elmohaseb-lsiyaha.netlify.app/thank-you.html">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_subject" value="طلب جديد من موقع سَبِيلُكَ لِلسَّفَر">
+                        
                         <div class="form-group">
                             <label for="name">الاسم الكامل</label>
                             <input type="text" id="name" name="name" required>
@@ -1014,7 +1020,7 @@
                         
                         <div class="form-group">
                             <label for="service">الخدمة المطلوبة</label>
-                            <select id="service" name="service">
+                            <select id="service" name="service" required>
                                 <option value="hajj">برامج الحج</option>
                                 <option value="umrah">برامج العمرة</option>
                                 <option value="saudi-visa">تأشيرات السعودية</option>
@@ -1188,7 +1194,7 @@
             document.getElementById('main-content').focus();
         });
         
-        // Form submission
+        // Form submission with FormSubmit
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -1229,8 +1235,21 @@
                     throw new Error('الرجاء إدخال بريد إلكتروني صحيح');
                 }
                 
-                // Simulate form submission (in a real scenario, you would use AJAX)
-                setTimeout(() => {
+                // Submit form to Formsubmit
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
                     // Show success message
                     successDiv.textContent = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
                     successDiv.style.display = 'block';
@@ -1240,14 +1259,17 @@
                     
                     // Reset form
                     form.reset();
-                    
+                })
+                .catch(error => {
+                    errorDiv.textContent = 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
+                    errorDiv.style.display = 'block';
+                    console.error('Error:', error);
+                })
+                .finally(() => {
                     // Reset button state
                     submitBtn.textContent = originalBtnText;
                     submitBtn.disabled = false;
-                    
-                    // Scroll to success message
-                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 1500);
+                });
                 
             } catch (error) {
                 // Show error message
