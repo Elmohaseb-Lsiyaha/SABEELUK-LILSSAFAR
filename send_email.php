@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 
 // تمكين CORS للطلبات من أي مصدر (للتطوير المحلي)
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json; charset=utf-8');
 
@@ -25,22 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     exit;
 }
 
-// استقبال البيانات سواء كـ POST عادي أو JSON
+// استقبال البيانات من النموذج
 $data = $_POST;
-if (empty($data)) {
-    $input = file_get_contents('php://input');
-    $data = json_decode($input, true);
-    
-    // تحقق إضافي من البيانات
-    if (empty($data)) {
-        http_response_code(400);
-        echo json_encode([
-            'success' => false,
-            'message' => 'لا توجد بيانات مرسلة'
-        ]);
-        exit;
-    }
-}
 
 // التحقق من البيانات المطلوبة
 $required_fields = ['name', 'email', 'phone', 'service', 'message'];
