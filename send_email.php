@@ -1,5 +1,16 @@
 <?php
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
+
+// السماح بطلبات CORS (لأغراض التطوير)
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
+// معالجة طلبات OPTIONS لـ CORS
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // جلب البيانات من النموذج
@@ -9,16 +20,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $service = isset($_POST['service']) ? strip_tags(trim($_POST['service'])) : '';
     $message = isset($_POST['message']) ? strip_tags(trim($_POST['message'])) : '';
     
+    // مصفوفة للرد
+    $response = [
+        'success' => false,
+        'message' => '',
+        'errors' => []
+    ];
+    
     // التحقق من صحة البيانات
-    if (empty($name) || empty($email) || empty($phone) || empty($service) || empty($message)) {
-        http_response_code(400);
-        echo "<p style='text-align:center;font-family:Tajawal;direction:rtl;'>الرجاء ملء جميع الحقول المطلوبة</p>";
-        exit;
+    if (empty($name)) {
+        $response['errors']['name'] = 'حقل الاسم مطلوب';
     }
     
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (empty($email)) {
+        $response['errors']['email'] = 'حقل البريد الإلكتروني مطلوب';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $response['errors']['email'] = 'الرجاء إدخال بريد إلكتروني صحيح';
+    }
+    
+    if (empty($phone)) {
+        $response['errors']['phone'] = 'حقل الهاتف مطلوب';
+    }
+    
+    if (empty($service)) {
+        $response['errors']['service'] = 'حقل الخدمة مطلوب';
+    }
+    
+    if (empty($message)) {
+        $response['errors']['message'] = 'حقل الرسالة مطلوب';
+    }
+    
+    // إذا كان هناك أخطاء
+    if (!empty($response['errors'])) {
         http_response_code(400);
-        echo "<p style='text-align:center;font-family:Tajawal;direction:rtl;'>الرجاء إدخال بريد إلكتروني صحيح</p>";
+        $response['message'] = 'الرجاء تصحيح الأخطاء في النموذج';
+        echo json_encode($response);
         exit;
     }
     
@@ -68,21 +104,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // إرسال البريد الإلكتروني
     if (mail($to, $subject, $email_content, $headers)) {
-        // إعادة التوجيه إلى صفحة الشكر عند النجاح
-        header("Location: thank-you.html");
-        exit;
+        http_response_code(200);
+        $response['success'] = true;
+        $response['message'] = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
     } else {
         http_response_code(500);
-        echo "<div style='text-align:center;font-family:Tajawal;direction:rtl;margin-top:50px;'>
-                <h2 style='color:#d32f2f;'>عذرًا، حدث خطأ أثناء إرسال رسالتك</h2>
-                <p>يرجى المحاولة مرة أخرى لاحقًا أو التواصل عبر واتساب</p>
-                <a href='https://wa.me/message/FIW5CFX2HH2HF1' style='background:#25D366;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;margin-top:20px;display:inline-block;'>
-                    التواصل عبر واتساب
-                </a>
-              </div>";
+        $response['message'] = 'عذرًا، حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى لاحقًا أو التواصل عبر واتساب.';
     }
+    
+    echo json_encode($response);
+    exit;
 } else {
-    http_response_code(403);
-    echo "<p style='text-align:center;font-family:Tajawal;direction:rtl;'>عفواً، طريقة الإرسال غير مسموح بها</p>";
+    http_response_code(405);
+    echo json_encode([
+        'success' => false,
+        'message' => 'طريقة الإرسال غير مسموح بها. يرجى استخدام طريقة POST.'
+    ]);
+    exit;
 }
 ?>
