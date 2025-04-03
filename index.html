@@ -878,7 +878,12 @@
             
             <div class="contact-container">
                 <div class="contact-form">
-                    <form id="contactForm" method="POST">
+                    <form id="contactForm" action="https://formspree.io/f/sabeeluk.lilssafar@gmail.com" method="POST">
+                        <!-- حقل مخفي لتحديد عنوان الرد -->
+                        <input type="hidden" name="_replyto" value="sabeeluk.lilssafar@gmail.com">
+                        <!-- إضافة subject ثابت -->
+                        <input type="hidden" name="_subject" value="رسالة جديدة من موقع سَبِيلُكَ لِلسَّفَر">
+                        
                         <div class="form-group">
                             <label for="name">الاسم الكامل</label>
                             <input type="text" id="name" name="name" required>
@@ -925,7 +930,7 @@
                     <div class="contact-card" aria-label="معلومات البريد الإلكتروني">
                         <i class="fas fa-envelope" aria-hidden="true"></i>
                         <h3>البريد الإلكتروني</h3>
-                        <p><a href="mailto:angel.science0@gmail.com" aria-label="أرسل بريد إلكتروني إلى angel.science0@gmail.com">angel.science0@gmail.com</a></p>
+                        <p><a href="mailto:sabeeluk.lilssafar@gmail.com" aria-label="أرسل بريد إلكتروني إلى sabeeluk.lilssafar@gmail.com">sabeeluk.lilssafar@gmail.com</a></p>
                     </div>
                     
                     <div class="contact-card" aria-label="معلومات العنوان">
@@ -1049,10 +1054,38 @@
         });
         
         // Form submission
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert('شكراً لتواصلكم معنا! سنرد عليكم في أقرب وقت ممكن.');
-            this.reset();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = 'جاري الإرسال...';
+                submitBtn.disabled = true;
+                
+                const response = await fetch(this.action, {
+                    method: this.method,
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    alert('تم إرسال رسالتك بنجاح! سنتواصل معك قريبًا.');
+                    this.reset();
+                } else {
+                    throw new Error('فشل في الإرسال');
+                }
+            } catch (error) {
+                alert('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى أو التواصل عبر واتساب.');
+                console.error(error);
+            } finally {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
         });
         
         // Newsletter form submission
