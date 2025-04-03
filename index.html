@@ -25,6 +25,47 @@
     <!-- Favicon -->
     <link rel="icon" type="image/gif" href="images/logo.gif">
     
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelAgency",
+      "name": "سَبِيلُكَ لِلسَّفَر",
+      "alternateName": "SABEELUK LILSSAFAR",
+      "description": "وكالة معتمدة متخصصة في تنظيم برامج الحج والعمرة، تأشيرات السعودية (سياحة/عمل/علاج)، حجز فنادق وطيران",
+      "url": "https://elmohaseb-lsiyaha.netlify.app",
+      "logo": "https://elmohaseb-lsiyaha.netlify.app/images/logo.gif",
+      "telephone": "+201099667530",
+      "email": "sabeeluk.lilssafar@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "محافظة الدقهلية",
+        "addressRegion": "الدقهلية",
+        "addressCountry": "مصر"
+      },
+      "sameAs": [
+        "https://www.facebook.com/vc.tasheer.eg",
+        "https://twitter.com/sabeeluk",
+        "https://instagram.com/sabeeluk",
+        "https://youtube.com/sabeeluk"
+      ],
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      }
+    }
+    </script>
+    
     <!-- Inline Critical CSS -->
     <style>
         :root {
@@ -84,6 +125,55 @@
             max-width: 100%;
             height: auto;
             display: block;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: #f1f1f1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        
+        .progress-bar {
+            height: 5px;
+            background: var(--accent-color);
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        /* Promo Banner */
+        .promo-banner {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 0.8rem;
+            text-align: center;
+            position: relative;
+            font-weight: 800;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .promo-link {
+            color: var(--accent-color);
+            text-decoration: underline;
+            margin-right: 0.5rem;
+            font-weight: 900;
+        }
+        
+        .close-promo {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
         }
 
         /* Header Styles */
@@ -149,6 +239,7 @@
             flex-wrap: wrap;
             gap: 1rem;
             margin-top: 1rem;
+            position: relative;
         }
         
         nav ul li a {
@@ -169,6 +260,12 @@
             background-color: rgba(255, 255, 255, 0.25);
         }
         
+        nav ul li a.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
         /* Main Content */
         main {
             max-width: 1200px;
@@ -575,6 +672,41 @@
             font-size: 1.6rem;
             font-weight: 900;
         }
+
+        /* WhatsApp Floating Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--whatsapp-color), var(--whatsapp-dark));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 15px rgba(18, 140, 126, 0.4);
+            z-index: 99;
+            transition: var(--transition);
+            animation: pulse 2s infinite;
+        }
+        
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            animation: none;
+        }
+        
+        .whatsapp-float i {
+            color: white;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
         
         /* Footer */
         footer {
@@ -835,16 +967,25 @@
     </style>
     
     <!-- Load non-critical CSS asynchronously -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800;900&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800;900&display=swap"></noscript>
 </head>
 <body>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="promo-banner">
+        <p>🔥 عروض خاصة للحج والعمرة هذا الموسم - خصم يصل إلى 20% 🔥 <a href="#contact" class="promo-link">احجز الآن</a></p>
+        <button class="close-promo" aria-label="إغلاق شريط العروض">×</button>
+    </div>
+    
     <a href="#main-content" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
     
     <header>
         <div class="header-content">
             <div class="logo-container">
-                <img src="images/logo.gif" alt="شعار سَبِيلُكَ لِلسَّفَر" class="logo-img" onerror="this.src='https://via.placeholder.com/80x80?text=شعار+الشركة';this.onerror=null;">
+                <img data-src="images/logo.gif" alt="شعار سَبِيلُكَ لِلسَّفَر" class="logo-img" onerror="this.src='https://via.placeholder.com/80x80?text=شعار+الشركة';this.onerror=null;">
                 <div>
                     <h1 class="company-name">سَبِيلُكَ لِلسَّفَر</h1>
                     <span class="company-name-en">SABEELUK LILSSAFAR</span>
@@ -934,7 +1075,7 @@
         </section>
         
         <section id="about" class="about-section" aria-labelledby="about-heading">
-            <img src="images/about-us.jpg" alt="فريق عمل سَبِيلُكَ لِلسَّفَر" class="about-img" onerror="this.src='https://via.placeholder.com/800x500?text=فريق+العمل';this.onerror=null;">
+            <img data-src="images/about-us.jpg" alt="فريق عمل سَبِيلُكَ لِلسَّفَر" class="about-img" onerror="this.src='https://via.placeholder.com/800x500?text=فريق+العمل';this.onerror=null;">
             <div class="about-content">
                 <h2 id="about-heading">من نحن</h2>
                 <p>شركة سَبِيلُكَ لِلسَّفَر هي وكالة سفر معتمدة متخصصة في تقديم خدمات الحج والعمرة وتأشيرات المملكة العربية السعودية. نحن نتميز بخبرة طويلة في مجال السياحة الدينية والسفر، مع فريق عمل محترف يضمن لكم رحلة مميزة بكل سهولة ويسر.</p>
@@ -954,7 +1095,7 @@
                         "تجربة رائعة مع شركة سَبِيلُكَ لِلسَّفَر، نظموا لنا رحلة عمرة ممتازة بكل التفاصيل، الفنادق كانت قريبة من الحرم والنقل مريح للغاية. شكراً لكم على الاحترافية!"
                     </div>
                     <div class="testimonial-author">
-                        <img src="images/client1.jpg" alt="صورة العميل أحمد محمد" class="author-img" onerror="this.src='https://via.placeholder.com/60x60?text=عميل';this.onerror=null;">
+                        <img data-src="images/client1.jpg" alt="صورة العميل أحمد محمد" class="author-img" onerror="this.src='https://via.placeholder.com/60x60?text=عميل';this.onerror=null;">
                         <div class="author-info">
                             <h4>أحمد محمد</h4>
                             <p>رحلة عمرة - 2023</p>
@@ -967,7 +1108,7 @@
                         "استخراج تأشيرة السعودية كانت عملية معقدة بالنسبة لي، لكن فريق سَبِيلُكَ لِلسَّفَر ساعدني في كل الخطوات وجعلوها سهلة جداً. أوصي بهم بشدة لكل من يحتاج خدمات التأشيرات."
                     </div>
                     <div class="testimonial-author">
-                        <img src="images/client2.jpg" alt="صورة العميلة سارة عبدالله" class="author-img" onerror="this.src='https://via.placeholder.com/60x60?text=عميلة';this.onerror=null;">
+                        <img data-src="images/client2.jpg" alt="صورة العميلة سارة عبدالله" class="author-img" onerror="this.src='https://via.placeholder.com/60x60?text=عميلة';this.onerror=null;">
                         <div class="author-info">
                             <h4>سارة عبدالله</h4>
                             <p>تأشيرة زيارة - 2024</p>
@@ -980,7 +1121,7 @@
                         "حجزنا رحلة حج مع الشركة وكانت منظمة بشكل ممتاز، المرشدون كانوا محترفين ومتعاونين، والفنادق كانت نظيفة وخدماتها ممتازة. سنتعامل معهم مجدداً في رحلاتنا القادمة إن شاء الله."
                     </div>
                     <div class="testimonial-author">
-                        <img src="images/client3.jpg" alt="صورة العميل خالد محمود" class="author-img" onerror="this.src='https://via.placeholder.com/60x60?text=عميل';this.onerror=null;">
+                        <img data-src="images/client3.jpg" alt="صورة العميل خالد محمود" class="author-img" onerror="this.src='https://via.placeholder.com/60x60?text=عميل';this.onerror=null;">
                         <div class="author-info">
                             <h4>خالد محمود</h4>
                             <p>رحلة حج - 2023</p>
@@ -1118,6 +1259,7 @@
                 <a href="#about" aria-label="الانتقال إلى قسم من نحن">من نحن</a>
                 <a href="#testimonials" aria-label="الانتقال إلى قسم آراء العملاء">آراء العملاء</a>
                 <a href="#contact" aria-label="الانتقال إلى قسم اتصل بنا">اتصل بنا</a>
+                <a href="privacy.html" aria-label="الانتقال إلى صفحة سياسة الخصوصية">سياسة الخصوصية</a>
             </div>
             
             <div class="footer-section" aria-labelledby="footer-services-heading">
@@ -1148,6 +1290,12 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <div class="whatsapp-float">
+        <a href="https://wa.me/message/FIW5CFX2HH2HF1" target="_blank" aria-label="تواصل معنا عبر واتساب">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
     <!-- JavaScript -->
     <script>
         // Update copyright year automatically
@@ -1171,6 +1319,14 @@
             });
         });
         
+        // Progress Bar
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+        
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
@@ -1190,6 +1346,30 @@
             });
         });
         
+        // Highlight active nav link
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav ul li a');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (pageYOffset >= (sectionTop - 300)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
         // Focus management for skip link
         document.querySelector('.skip-link').addEventListener('click', function() {
             document.getElementById('main-content').setAttribute('tabindex', '-1');
@@ -1197,7 +1377,7 @@
         });
         
         // Form submission with FormSubmit
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const form = this;
@@ -1237,48 +1417,40 @@
                     throw new Error('الرجاء إدخال بريد إلكتروني صحيح');
                 }
                 
+                // Validate phone number
+                const phone = form.querySelector('[type="tel"]');
+                if (phone && !/^[\d\s\+\-]{8,}$/.test(phone.value)) {
+                    phone.style.borderColor = 'var(--error-color)';
+                    throw new Error('الرجاء إدخال رقم هاتف صحيح');
+                }
+                
                 // Create FormData object
                 const formData = new FormData(form);
                 
                 // Send form data
-                fetch(form.action, {
+                const response = await fetch(form.action, {
                     method: 'POST',
                     body: formData,
                     headers: {
                         'Accept': 'application/json'
                     }
-                })
-                .then(response => {
-                    // Always show success message if the email is received
+                });
+                
+                if (response.ok) {
+                    // Show success message
                     successDiv.textContent = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
                     successDiv.style.display = 'block';
                     document.getElementById('thankYouModal').classList.add('active');
                     form.reset();
-                })
-                .catch(error => {
-                    console.log('Email was sent but client-side error occurred:', error);
-                    // Still show success because we know emails are being received
-                    successDiv.textContent = 'تم استلام رسالتك بنجاح! سنقوم بالرد عليك قريباً.';
-                    successDiv.style.display = 'block';
-                    document.getElementById('thankYouModal').classList.add('active');
-                    form.reset();
-                })
-                .finally(() => {
-                    submitBtn.textContent = originalBtnText;
-                    submitBtn.disabled = false;
-                });
-                
+                } else {
+                    throw new Error('حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى لاحقًا.');
+                }
             } catch (error) {
-                // Show error message
                 errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
-                
-                // Scroll to error message
                 errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
                 console.error('Error:', error);
-                
-                // Reset button state
+            } finally {
                 submitBtn.textContent = originalBtnText;
                 submitBtn.disabled = false;
             }
@@ -1311,12 +1483,43 @@
             }
         });
         
+        // Close promo banner
+        document.querySelector('.close-promo').addEventListener('click', function() {
+            document.querySelector('.promo-banner').style.display = 'none';
+            localStorage.setItem('promoClosed', 'true');
+        });
+        
+        // Check if promo was closed
+        if (localStorage.getItem('promoClosed')) {
+            document.querySelector('.promo-banner').style.display = 'none';
+        }
+        
         // Load non-critical resources
         document.addEventListener('DOMContentLoaded', function() {
+            // Load Font Awesome
             const loadFontAwesome = document.createElement('link');
             loadFontAwesome.rel = 'stylesheet';
             loadFontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css';
             document.head.appendChild(loadFontAwesome);
+            
+            // Lazy load images
+            const lazyImages = [].slice.call(document.querySelectorAll("img[data-src]"));
+            
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            }
         });
     </script>
 </body>
