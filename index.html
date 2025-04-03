@@ -1427,17 +1427,31 @@
                 // Create FormData object
                 const formData = new FormData(form);
                 
-                // Solution 1: Use traditional form submission
-                form.submit();
-                
-                // Solution 2: Show success message immediately (fallback)
+                // Show success message and modal instead of redirecting
                 successDiv.textContent = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
                 successDiv.style.display = 'block';
                 document.getElementById('thankYouModal').classList.add('active');
                 form.reset();
                 
+                // Submit form data using fetch as fallback
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                }
+                
             } catch (error) {
-                errorDiv.textContent = error.message || 'تم إرسال الرسالة بنجاح، ولكن حدث خطأ في استلام التأكيد.';
+                errorDiv.textContent = error.message || 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
                 errorDiv.style.display = 'block';
                 errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 console.error('Error:', error);
