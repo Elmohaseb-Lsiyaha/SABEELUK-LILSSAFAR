@@ -44,6 +44,7 @@
             --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.2);
             --border-radius: 8px;
             --transition: all 0.3s ease;
+            --error-color: #d32f2f;
         }
         
         * {
@@ -439,6 +440,22 @@
             box-shadow: 0 0 0 3px rgba(0, 100, 148, 0.2);
         }
         
+        .form-group input:invalid,
+        .form-group textarea:invalid {
+            border-color: var(--error-color);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: var(--error-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            border: 1px solid #ef9a9a;
+            font-weight: 700;
+            display: none;
+        }
+        
         .submit-btn {
             background: linear-gradient(to bottom, var(--primary-color), var(--primary-light));
             color: white;
@@ -456,6 +473,13 @@
             background: var(--primary-light);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 100, 148, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         .contact-methods {
@@ -883,6 +907,8 @@
                         <input type="hidden" name="_replyto" value="sabeeluk.lilssafar@gmail.com">
                         <!-- إضافة subject ثابت -->
                         <input type="hidden" name="_subject" value="رسالة جديدة من موقع سَبِيلُكَ لِلسَّفَر">
+                        <!-- إضافة redirect بعد الإرسال الناجح -->
+                        <input type="hidden" name="_next" value="thank-you.html">
                         
                         <div class="form-group">
                             <label for="name">الاسم الكامل</label>
@@ -917,6 +943,7 @@
                         </div>
                         
                         <button type="submit" class="submit-btn">إرسال الرسالة</button>
+                        <div id="formError" class="error-message"></div>
                     </form>
                 </div>
                 
@@ -1053,20 +1080,42 @@
             document.getElementById('main-content').focus();
         });
         
-        // Form submission
+        // Form submission - الكود المعدل
         document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const formData = new FormData(this);
-            const submitBtn = this.querySelector('button[type="submit"]');
+            const form = this;
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const errorDiv = document.getElementById('formError');
             const originalBtnText = submitBtn.textContent;
             
             try {
+                // إظهار حالة التحميل
                 submitBtn.textContent = 'جاري الإرسال...';
                 submitBtn.disabled = true;
+                errorDiv.style.display = 'none';
                 
-                const response = await fetch(this.action, {
-                    method: this.method,
+                // التحقق من الحقول المطلوبة
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.style.borderColor = 'var(--error-color)';
+                        isValid = false;
+                    } else {
+                        field.style.borderColor = '#ddd';
+                    }
+                });
+                
+                if (!isValid) {
+                    throw new Error('الرجاء ملء جميع الحقول المطلوبة');
+                }
+                
+                // إرسال البيانات
+                const response = await fetch(form.action, {
+                    method: form.method,
                     body: formData,
                     headers: {
                         'Accept': 'application/json'
@@ -1074,15 +1123,23 @@
                 });
                 
                 if (response.ok) {
-                    alert('تم إرسال رسالتك بنجاح! سنتواصل معك قريبًا.');
-                    this.reset();
+                    // إذا كان الإرسال ناجحاً، يتم التوجيه إلى صفحة الشكر
+                    window.location.href = 'thank-you.html';
                 } else {
-                    throw new Error('فشل في الإرسال');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'حدث خطأ أثناء إرسال الرسالة');
                 }
             } catch (error) {
-                alert('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى أو التواصل عبر واتساب.');
-                console.error(error);
+                // عرض رسالة الخطأ
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+                
+                // التمرير إلى رسالة الخطأ
+                errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                console.error('Error:', error);
             } finally {
+                // إعادة تعيين حالة الزر
                 submitBtn.textContent = originalBtnText;
                 submitBtn.disabled = false;
             }

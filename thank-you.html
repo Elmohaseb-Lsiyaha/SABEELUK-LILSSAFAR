@@ -40,8 +40,10 @@
             color: #333;
         }
         .whatsapp-btn {
-            display: inline-block;
-            background: #25D366;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #25D366, #128C7E);
             color: white;
             padding: 1rem 2rem;
             border-radius: 50px;
@@ -50,28 +52,43 @@
             margin-top: 1rem;
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(18, 140, 126, 0.4);
         }
         .whatsapp-btn:hover {
             background: white;
             color: #25D366;
             border-color: #25D366;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(7, 94, 84, 0.5);
         }
         .fa-whatsapp {
-            margin-left: 0.5rem;
+            margin-left: 0.8rem;
+            font-size: 1.4rem;
+        }
+        .logo-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-color);
+            object-fit: contain;
+            background-color: white;
+            padding: 5px;
+            margin-bottom: 1.5rem;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="success-container">
-        <img src="images/logo.gif" alt="شعار سَبِيلُكَ لِلسَّفَر" width="100" style="margin-bottom: 1.5rem;">
+        <img src="images/logo.gif" alt="شعار سَبِيلُكَ لِلسَّفَر" class="logo-img" onerror="this.src='https://via.placeholder.com/100x100?text=شعار+الشركة';this.onerror=null;">
         <h1>تم استلام رسالتك بنجاح!</h1>
         <p>سنقوم بالرد عليك خلال 24 ساعة. للاستفسارات العاجلة، يرجى التواصل عبر واتساب.</p>
         <a href="https://wa.me/message/FIW5CFX2HH2HF1" class="whatsapp-btn" target="_blank">
             التواصل عبر واتساب <i class="fab fa-whatsapp"></i>
         </a>
         <p style="margin-top: 2rem;">
-            <a href="index.html" style="color: var(--primary-color); text-decoration: underline;">العودة إلى الصفحة الرئيسية</a>
+            <a href="index.html" style="color: var(--primary-color); text-decoration: underline; font-weight: bold;">العودة إلى الصفحة الرئيسية</a>
         </p>
     </div>
 </body>
