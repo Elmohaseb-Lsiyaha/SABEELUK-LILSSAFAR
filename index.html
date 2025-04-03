@@ -953,7 +953,7 @@
             
             <div class="contact-container">
                 <div class="contact-form">
-                    <form id="contactForm" method="POST">
+                    <form id="contactForm" method="POST" action="thank-you.html">
                         <div class="form-group">
                             <label for="name">الاسم الكامل</label>
                             <input type="text" id="name" name="name" required>
@@ -988,7 +988,6 @@
                         
                         <button type="submit" class="submit-btn">إرسال الرسالة</button>
                         <div id="formError" class="error-message"></div>
-                        <div id="formSuccess" class="success-message"></div>
                     </form>
                 </div>
                 
@@ -1132,7 +1131,6 @@
             const form = this;
             const submitBtn = form.querySelector('button[type="submit"]');
             const errorDiv = document.getElementById('formError');
-            const successDiv = document.getElementById('formSuccess');
             const originalBtnText = submitBtn.textContent;
             
             try {
@@ -1140,7 +1138,6 @@
                 submitBtn.textContent = 'جاري الإرسال...';
                 submitBtn.disabled = true;
                 errorDiv.style.display = 'none';
-                successDiv.style.display = 'none';
                 
                 // Validate required fields
                 const requiredFields = form.querySelectorAll('[required]');
@@ -1166,21 +1163,9 @@
                     throw new Error('الرجاء إدخال بريد إلكتروني صحيح');
                 }
                 
-                // Simulate form submission (in a real scenario, you would send to a server)
+                // Submit the form after validation
                 setTimeout(() => {
-                    // Show success message
-                    successDiv.textContent = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
-                    successDiv.style.display = 'block';
-                    
-                    // Reset form
-                    form.reset();
-                    
-                    // Scroll to success message
-                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // Reset button state
-                    submitBtn.textContent = originalBtnText;
-                    submitBtn.disabled = false;
+                    form.submit();
                 }, 1500);
                 
             } catch (error) {
