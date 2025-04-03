@@ -9,6 +9,7 @@
             --primary-color: #006494;
             --accent-color: #FF9100;
             --white: #FFFFFF;
+            --success-color: #388e3c;
         }
         body {
             font-family: 'Tajawal', sans-serif;
@@ -75,6 +76,11 @@
             padding: 5px;
             margin-bottom: 1.5rem;
         }
+        .check-icon {
+            color: var(--success-color);
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
@@ -82,6 +88,9 @@
 <body>
     <div class="success-container">
         <img src="images/logo.gif" alt="شعار سَبِيلُكَ لِلسَّفَر" class="logo-img" onerror="this.src='https://via.placeholder.com/100x100?text=شعار+الشركة';this.onerror=null;">
+        <div class="check-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
         <h1>تم استلام رسالتك بنجاح!</h1>
         <p>سنقوم بالرد عليك خلال 24 ساعة. للاستفسارات العاجلة، يرجى التواصل عبر واتساب.</p>
         <a href="https://wa.me/message/FIW5CFX2HH2HF1" class="whatsapp-btn" target="_blank">
@@ -91,5 +100,20 @@
             <a href="index.html" style="color: var(--primary-color); text-decoration: underline; font-weight: bold;">العودة إلى الصفحة الرئيسية</a>
         </p>
     </div>
+
+    <script>
+        // تحسين تجربة المستخدم بإضافة تأثير بسيط عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.success-container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(20px)';
+            container.style.transition = 'all 0.5s ease';
+            
+            setTimeout(() => {
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
 </body>
 </html>

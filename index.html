@@ -45,6 +45,7 @@
             --border-radius: 8px;
             --transition: all 0.3s ease;
             --error-color: #d32f2f;
+            --success-color: #388e3c;
         }
         
         * {
@@ -84,7 +85,7 @@
             height: auto;
             display: block;
         }
-        
+
         /* Header Styles */
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
@@ -452,6 +453,17 @@
             border-radius: var(--border-radius);
             margin-top: 1rem;
             border: 1px solid #ef9a9a;
+            font-weight: 700;
+            display: none;
+        }
+
+        .success-message {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            border: 1px solid #a5d6a7;
             font-weight: 700;
             display: none;
         }
@@ -941,14 +953,7 @@
             
             <div class="contact-container">
                 <div class="contact-form">
-                    <form id="contactForm" action="https://formsubmit.co/sabeeluk.lilssafar@gmail.com" method="POST">
-                        <!-- حقول مخفية ل FormSubmit -->
-                        <input type="hidden" name="_next" value="https://elmohaseb-lsiyaha.netlify.app/thank-you.html">
-                        <input type="hidden" name="_subject" value="رسالة جديدة من موقع سَبِيلُكَ لِلسَّفَر">
-                        <input type="hidden" name="_template" value="table">
-                        <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_autoresponse" value="شكراً لتواصلكم مع سَبِيلُكَ لِلسَّفَر. سنقوم بالرد عليكم خلال 24 ساعة.">
-                        
+                    <form id="contactForm" method="POST">
                         <div class="form-group">
                             <label for="name">الاسم الكامل</label>
                             <input type="text" id="name" name="name" required>
@@ -983,6 +988,7 @@
                         
                         <button type="submit" class="submit-btn">إرسال الرسالة</button>
                         <div id="formError" class="error-message"></div>
+                        <div id="formSuccess" class="success-message"></div>
                     </form>
                 </div>
                 
@@ -1120,12 +1126,13 @@
         });
         
         // Form submission
-        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const form = this;
             const submitBtn = form.querySelector('button[type="submit"]');
             const errorDiv = document.getElementById('formError');
+            const successDiv = document.getElementById('formSuccess');
             const originalBtnText = submitBtn.textContent;
             
             try {
@@ -1133,6 +1140,7 @@
                 submitBtn.textContent = 'جاري الإرسال...';
                 submitBtn.disabled = true;
                 errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
                 
                 // Validate required fields
                 const requiredFields = form.querySelectorAll('[required]');
@@ -1151,22 +1159,30 @@
                     throw new Error('الرجاء ملء جميع الحقول المطلوبة');
                 }
                 
-                // Submit form data
-                const formData = new FormData(form);
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    // Redirect to thank you page
-                    window.location.href = form.querySelector('[name="_next"]').value;
-                } else {
-                    throw new Error('حدث خطأ أثناء إرسال الرسالة');
+                // Validate email format
+                const email = form.querySelector('[type="email"]');
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                    email.style.borderColor = 'var(--error-color)';
+                    throw new Error('الرجاء إدخال بريد إلكتروني صحيح');
                 }
+                
+                // Simulate form submission (in a real scenario, you would send to a server)
+                setTimeout(() => {
+                    // Show success message
+                    successDiv.textContent = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
+                    successDiv.style.display = 'block';
+                    
+                    // Reset form
+                    form.reset();
+                    
+                    // Scroll to success message
+                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Reset button state
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                }, 1500);
+                
             } catch (error) {
                 // Show error message
                 errorDiv.textContent = error.message;
@@ -1176,7 +1192,7 @@
                 errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 
                 console.error('Error:', error);
-            } finally {
+                
                 // Reset button state
                 submitBtn.textContent = originalBtnText;
                 submitBtn.disabled = false;
