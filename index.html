@@ -460,12 +460,13 @@
         .success-message {
             background-color: #e8f5e9;
             color: var(--success-color);
-            padding: 1rem;
+            padding: 1.5rem;
             border-radius: var(--border-radius);
-            margin-top: 1rem;
+            margin: 1rem 0;
             border: 1px solid #a5d6a7;
             font-weight: 700;
             display: none;
+            text-align: center;
         }
         
         .submit-btn {
@@ -721,34 +722,73 @@
             top: 0;
         }
         
-        /* Thank You Page Styles */
+        /* Thank You Modal Styles */
+        .thank-you-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .thank-you-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
         .thank-you-container {
-            max-width: 800px;
-            margin: 5rem auto;
-            padding: 2rem;
-            text-align: center;
             background: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            border: 3px solid var(--primary-color);
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            border-top: 5px solid var(--accent-color);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .thank-you-modal.active .thank-you-container {
+            transform: translateY(0);
         }
         
         .thank-you-icon {
             font-size: 5rem;
-            color: var(--primary-color);
+            color: var(--success-color);
             margin-bottom: 1.5rem;
         }
         
         .thank-you-title {
             color: var(--primary-color);
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 1.5rem;
         }
         
         .thank-you-message {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-bottom: 2rem;
             line-height: 1.8;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
         }
         
         /* Responsive Design */
@@ -781,12 +821,15 @@
             }
             
             .thank-you-container {
-                margin: 2rem auto;
-                padding: 1.5rem;
+                padding: 2rem 1.5rem;
             }
             
             .thank-you-title {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+            
+            .thank-you-message {
+                font-size: 1rem;
             }
         }
     </style>
@@ -953,7 +996,7 @@
             
             <div class="contact-container">
                 <div class="contact-form">
-                    <form id="contactForm" method="POST" action="thank-you.html">
+                    <form id="contactForm" method="POST">
                         <div class="form-group">
                             <label for="name">الاسم الكامل</label>
                             <input type="text" id="name" name="name" required>
@@ -988,6 +1031,7 @@
                         
                         <button type="submit" class="submit-btn">إرسال الرسالة</button>
                         <div id="formError" class="error-message"></div>
+                        <div id="formSuccess" class="success-message" style="display: none;"></div>
                     </form>
                 </div>
                 
@@ -1025,6 +1069,26 @@
             </a>
         </section>
     </main>
+    
+    <!-- Thank You Modal -->
+    <div class="thank-you-modal" id="thankYouModal">
+        <div class="thank-you-container">
+            <button class="close-modal" id="closeModal" aria-label="إغلاق النافذة">&times;</button>
+            <div class="thank-you-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="thank-you-title">تم استلام رسالتك بنجاح!</h2>
+            <p class="thank-you-message">سنقوم بالرد عليك خلال 24 ساعة. للاستفسارات العاجلة، يرجى التواصل عبر واتساب.</p>
+            <a href="https://wa.me/message/FIW5CFX2HH2HF1" class="whatsapp-btn" target="_blank" aria-label="تواصل معنا عبر واتساب">
+                <i class="fab fa-whatsapp"></i> التواصل عبر واتساب
+            </a>
+            <p style="margin-top: 2rem;">
+                <button id="backToHome" class="whatsapp-btn" style="background: var(--primary-color);">
+                    العودة إلى الصفحة الرئيسية
+                </button>
+            </p>
+        </div>
+    </div>
     
     <footer aria-label="تذييل الصفحة">
         <div class="footer-content">
@@ -1131,6 +1195,7 @@
             const form = this;
             const submitBtn = form.querySelector('button[type="submit"]');
             const errorDiv = document.getElementById('formError');
+            const successDiv = document.getElementById('formSuccess');
             const originalBtnText = submitBtn.textContent;
             
             try {
@@ -1138,6 +1203,7 @@
                 submitBtn.textContent = 'جاري الإرسال...';
                 submitBtn.disabled = true;
                 errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
                 
                 // Validate required fields
                 const requiredFields = form.querySelectorAll('[required]');
@@ -1163,9 +1229,24 @@
                     throw new Error('الرجاء إدخال بريد إلكتروني صحيح');
                 }
                 
-                // Submit the form after validation
+                // Simulate form submission (in a real scenario, you would use AJAX)
                 setTimeout(() => {
-                    form.submit();
+                    // Show success message
+                    successDiv.textContent = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.';
+                    successDiv.style.display = 'block';
+                    
+                    // Show thank you modal
+                    document.getElementById('thankYouModal').classList.add('active');
+                    
+                    // Reset form
+                    form.reset();
+                    
+                    // Reset button state
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    // Scroll to success message
+                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 1500);
                 
             } catch (error) {
@@ -1189,6 +1270,26 @@
             e.preventDefault();
             alert('شكراً لاشتراككم في نشرتنا البريدية!');
             this.reset();
+        });
+        
+        // Thank You Modal functionality
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('thankYouModal').classList.remove('active');
+        });
+        
+        document.getElementById('backToHome').addEventListener('click', function() {
+            document.getElementById('thankYouModal').classList.remove('active');
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('thankYouModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
         });
         
         // Load non-critical resources
